@@ -3,16 +3,16 @@ sc = SparkContext(appName="tweets")
 
 distFile = sc.textFile("data/geotweets.tsv")
 
-#Finding distinct countries
-tweets = distFile.map(lambda line: line.split('\t'))
-country = tweets.map(lambda tweet: tweet[1])
-dist_countries = country.distinct().count()
-
 #Mapping 
 tweets = distFile.map(lambda line: line.split('\t'))
-country = tweets.map(lambda tweet: (tweet[1], 1))
-sumTweets = country.reduceByKey(lambda a, b: a + b)
-filtered = sumTweets.filter(lambda a: a[1]>10)
+countryLongLat = tweets.map(lambda tweet: (tweet[1], (tweet[11], tweet[12]))).groupByKey()
+filtered = countryLongLat.filter(lambda a: len(a[1])>10)
+
+
+
+
+#sumTweets = country.reduceByKey(lambda a, b: a + b)
+
 print(filtered.collect())
 
 #result = []
