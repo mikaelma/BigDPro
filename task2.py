@@ -12,7 +12,9 @@ country = tweets.map(lambda tweet: (tweet[1],1))
 sumTweets = country.reduceByKey(lambda a, b: a + b)
 multipleSort = sumTweets.takeOrdered(dist_countries, key=lambda x: (-1 * x[1], x[0]))
 
+print(multipleSort)
+'''
 result = [multipleSort]
 sc.parallelize(result).coalesce(1).saveAsTextFile('Results/Task2')
-
+'''
 sc.stop()
