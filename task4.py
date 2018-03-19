@@ -26,7 +26,8 @@ countlist = counts_collected.map(lambda entry:darkMagic(entry))
 max_traffic = countlist.map(lambda entry:(entry[0],max(entry[1].items(), key=operator.itemgetter(1))[0],entry[1][max(entry[1].items(),key=operator.itemgetter(1))[0]]))
 print(max_traffic.collect())
 
-
+sc.parallelize(max_traffic.collect())\
+.map(lambda entry:'\t'.join(str(word) for word in entry)).coalesce(1).saveAsTextFile('Results/Task4')
 
 
 
