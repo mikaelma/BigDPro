@@ -23,8 +23,12 @@ counts = hours.map(lambda entry:((entry[0],entry[1])))
 zeroValue = ('',dict)
 counts_collected = counts.groupByKey()
 countlist = counts_collected.map(lambda entry:darkMagic(entry))
-max_traffic = countlist.map(lambda entry:(entry[0],max(entry[1].items(), key=operator.itemgetter(1))[0]))
+max_traffic = countlist.map(lambda entry:(entry[0],max(entry[1].items(), key=operator.itemgetter(1))[0])).collect()
 
 
+sc.parallelize(max_traffic)\
+.map(lambda x: '\t'.join([str(word) for word in x]))\
+.coalesce(1)\
+.saveAsTextFile('Results/Task4')
 
 
