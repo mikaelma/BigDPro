@@ -1,3 +1,4 @@
 {
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.pythonPath": "/home/hans/.local/share/virtualenvs/TDT4215-0Kh99vMZ/bin/python"
 }
