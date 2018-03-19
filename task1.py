@@ -3,7 +3,7 @@ sc = SparkContext(appName="tweets")
 
 distFile = sc.textFile("data/geotweets.tsv")
 
-#1.a: 
+#A 
 dist_tweets=distFile.count()
 
 #B: 
@@ -48,7 +48,7 @@ max_long = longitude.max()
 #J
 tweets = distFile.map(lambda line: line.split('\t'))
 charCount = tweets.map(lambda tweet: len(tweet[10])).collect()
-dist_tweets=distFile.count()
+dist_tweets = distFile.count()
 avgCharTweet = sum(charCount)/dist_tweets
 
 #K

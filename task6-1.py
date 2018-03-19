@@ -33,8 +33,6 @@ def longerLower(entries):
             res[entry]+=1
     return res
 
-
-
 tweets = tweets.map(lambda entry:(entry[2],longerLower(entry[10])))
 tweets = tweets.filter(lambda entry:(len(list(entry[1].keys()))>0))
 tweets = tweets.reduceByKey(mergeDict)
