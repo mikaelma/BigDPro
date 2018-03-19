@@ -5,7 +5,8 @@ sc = SparkContext(appName="tweets")
 
 distFile = sc.textFile("data/geotweets.tsv")
 
-def darkMagic(entry):
+#Create a dict whose keys are hours and values are tweets druing the respective hour. 
+def hour_counter(entry):
     hours = dict()
     for item in entry[1]:
         if item not in hours:
@@ -15,14 +16,16 @@ def darkMagic(entry):
 
 #Mapping 
 tweets = distFile.map(lambda line: line.split('\t'))
-countryLongLat = tweets.map(lambda tweet: (tweet[1], (float(tweet[11]), float(tweet[12]),1)))
+#Map by country, time of tweet and  timezone offset
 time = tweets.map(lambda tweet:(tweet[1],(int(tweet[0]),int(tweet[8]))))
+#Add the timezone offset and time of tweet in order to aquire the local time of tweet
 time_normalized  = time.map(lambda temporality:(temporality[0],(temporality[1][0]+temporality[1][1]*1000)))
+#Figure out the amount of hours in the unix timestamp, then modulo this by 24 to get the hour of tweet
 hours = time_normalized.map(lambda entry:(entry[0],floor(entry[1]/3600000)%24))
-counts = hours.map(lambda entry:((entry[0],entry[1])))
-zeroValue = ('',dict)
-counts_collected = counts.groupByKey()
-countlist = counts_collected.map(lambda entry:darkMagic(entry))
+#Group by keys, creating iterable list of tweet hours
+counts_collected = hours.groupByKey()
+countlist = counts_collected.map(lambda entry:hour_counter(entry))
+#The max() call returns the keys of max values in decending order, looks sort of messy when used like below 
 max_traffic = countlist.map(lambda entry:(entry[0],max(entry[1].items(), key=operator.itemgetter(1))[0],entry[1][max(entry[1].items(),key=operator.itemgetter(1))[0]]))
 print(max_traffic.collect())
 
